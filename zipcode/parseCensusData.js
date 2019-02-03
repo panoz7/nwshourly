@@ -14,7 +14,7 @@ entries.forEach(entry => {
     if (zip) {
         let lat = values[5];
         let long = values[6].trim();
-        zipData.push([zip, lat, long])
+        zipData.push({zip, lat, long})
     }
 })
 
