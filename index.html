@@ -1,0 +1,50 @@
+<html>
+
+<head>
+    <style>
+        body {
+            background-color: white;
+            margin: 0;
+        }
+
+        ul.hourlyData {
+            background-color: black;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: center;
+            display: flex;
+        }
+
+        ul.hourlyData li {
+            padding: 0;
+            height: 200px;
+            /* display: block; */
+            flex: auto;
+            position: relative;
+        }
+
+        ul.hourlyData li span {
+            font: 11px arial;
+            color: rgba(255,255,255,.5);
+            position: absolute;
+            bottom: 10px;
+        }
+        
+
+    </style>
+</head>
+
+
+<body>
+
+    <ul class='hourlyData' id='tempData'></ul>
+    <ul class='hourlyData' id='precipProbabilityData'></ul>
+    <ul class='hourlyData' id='skyCoverData'></ul>
+    
+
+</body>
+
+<script type="module" src="built/main.js"></script>
+
+</html>
