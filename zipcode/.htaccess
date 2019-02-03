@@ -1,0 +1,5 @@
+RewriteEngine on
+RewriteRule ^([A-Za-z0-9-]+)$ getzipdata.php?zip=$1 [NC]
+
+
+# RewriteRule ^products/([A-Za-z0-9-]+)/?$ results.php?products=$1 [NC]
