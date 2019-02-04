@@ -1,12 +1,13 @@
-import { NwsHourly } from './nwsHourly.js';
+import { getNwsHourly } from './nwsHourly.js';
 import { roundDate } from './helper.js';
 
-let nwsHourly = new NwsHourly(20009);
-nwsHourly.getData()
-.then(_ => {
+getNwsHourly(20009)
+.then(nwsHourly => {
+    console.log(nwsHourly)
+
     const startTime = roundDate(new Date, 'h');
     const endTime = new Date(startTime.getTime() + (23 * 60 * 60 * 1000))
-    
+
     let tempData = nwsHourly.hourlyTemp.getDisplayData(startTime, endTime, 45, 35);
     buildDisplay(document.getElementById('tempData'), tempData);
 
@@ -15,6 +16,9 @@ nwsHourly.getData()
 
     let precipProbabilityData = nwsHourly.precipProbability.getDisplayData(startTime, endTime);
     buildDisplay(document.getElementById('precipProbabilityData'), precipProbabilityData);
+
+    let windSpeedData = nwsHourly.windSpeed.getDisplayData(startTime, endTime);
+    buildDisplay(document.getElementById('windSpeedData'), windSpeedData);
 
 })
 

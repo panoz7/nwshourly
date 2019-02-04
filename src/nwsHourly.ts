@@ -1,17 +1,5 @@
 import { makeHttpRequest, roundNum } from './helper.js';
 
-function test(str: string): void {
-    
-    const url: string = 'https://api.weather.gov/gridpoints/LWX/95,71';
-
-    makeHttpRequest(url, 'GET')
-    .then(result => {
-        result = JSON.parse(result);
-        console.log(result);
-    })
-
-}
-
 interface NwsEntry {
     date: Date;
     duration?: number;
@@ -24,22 +12,37 @@ interface DisplayData {
     rgba: string;
 }
 
-export class NwsHourly {
-    private zipCode: number;
-    private rawData;
+export async function getNwsHourly(zipCode: number): Promise<NwsHourly> {
+    
+    try {
+        // Get the zip code data
+        const zipData = JSON.parse(await makeHttpRequest(`./zipcode/${zipCode}`, 'GET'));
 
-    constructor(zipCode: number) {
-        this.zipCode = zipCode;
-    }
+        // Fetch the point data from the NWS using the lat and long from the zip data
+        const pointData = JSON.parse(await makeHttpRequest(`https://api.weather.gov/points/${zipData.lat},${zipData.long}`, 'GET'));
 
-    async getData(): Promise<void> {
-        const url: string = 'https://api.weather.gov/gridpoints/LWX/95,71';
+        const gridX = pointData.properties.gridX;
+        const gridY = pointData.properties.gridY;
+        const cwa = pointData.properties.cwa;
 
+        const url: string = `https://api.weather.gov/gridpoints/${cwa}/${gridX},${gridY}`;
         const data = await makeHttpRequest(url, 'GET');
 
-        this.rawData = JSON.parse(data);
+        const rawData = JSON.parse(data);
 
-        return;
+        return new NwsHourly(rawData);
+    }
+    catch(e) {
+        console.log(e);
+    }
+
+}
+
+class NwsHourly {
+    private rawData;
+
+    constructor(rawData) {
+        this.rawData = rawData;
     }
 
     get hourlyTemp() {
@@ -52,6 +55,10 @@ export class NwsHourly {
 
     get precipProbability() {
         return new NwsPercentage(this.rawData.properties.probabilityOfPrecipitation, [0,0,255]);
+    }
+
+    get windSpeed() {
+        return new NwsWindSpeed(this.rawData.properties.windSpeed, [0,0,255], 20);
     }
 }
 
@@ -142,6 +149,34 @@ class NwsPercentage extends NwsProperty {
 
     private toRGBA(percent: number): string {                     
         const opacity = percent / 100;
+        return `rgba(${this.color[0]},${this.color[1]},${this.color[2]},${opacity})`;
+    }
+
+}
+
+class NwsWindSpeed extends NwsProperty {
+
+    color: number[];
+    max: number;
+
+    constructor(rawData, color: number[], max: number) {
+        super(rawData);
+        this.color = color;
+        this.max = max;
+    }
+
+    getDisplayData(startTime: Date, endTime: Date): DisplayData[]  {
+        const baseData = this.getInterval(startTime, endTime);
+
+        return baseData.map((entry): DisplayData => {
+            let rgba = this.toRGBA(entry.value)
+            return {date: entry.date, value: roundNum(entry.value,2), rgba: rgba}
+        })
+    }
+
+    private toRGBA(value: number): string {                     
+        let opacity = value / this.max;
+        if (opacity > 1) opacity = 1;
         return `rgba(${this.color[0]},${this.color[1]},${this.color[2]},${opacity})`;
     }
 
