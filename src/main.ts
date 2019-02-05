@@ -3,8 +3,8 @@ import { roundDate } from './helper.js';
 import { NwsDisplay, TempDisplay, PercentDisplay, NumericDisplay } from './nwsDisplay.js';
 
 let displays = []
-let startTime: Date;
-let endTime: Date;
+let startTime: Date = roundDate(new Date, 'h');
+let endTime: Date = new Date(startTime.getTime() + (23 * 60 * 60 * 1000));
 
 setupDisplays(20009);
 
@@ -35,8 +35,8 @@ async function setupDisplays(zipCode: number): Promise<void> {
     displays.push(new PercentDisplay(document.getElementById('precipProbabilityData'), data.precipProbability, [0,0,255]));
     displays.push(new NumericDisplay(document.getElementById('windSpeedData'), data.windSpeed, [190,190,190], 20));
 
-    startTime = roundDate(new Date, 'h');
-    endTime = new Date(startTime.getTime() + (23 * 60 * 60 * 1000))
+    // startTime = roundDate(new Date, 'h');
+    // endTime = new Date(startTime.getTime() + (23 * 60 * 60 * 1000))
 
     displays.forEach(display => display.renderDisplay(startTime, endTime))
 
