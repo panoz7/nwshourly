@@ -12,7 +12,6 @@
             list-style: none;
             padding: 0;
             margin: 0;
-            text-align: center;
             display: flex;
         }
 
@@ -29,6 +28,9 @@
             color: rgba(255,255,255,.5);
             position: absolute;
             bottom: 10px;
+            margin: 0px auto;
+            width: 100%;
+            text-align: center;
         }
         
 
@@ -38,12 +40,14 @@
 
 <body>
 
+
     <ul class='hourlyData' id='tempData'></ul>
     <ul class='hourlyData' id='precipProbabilityData'></ul>
     <ul class='hourlyData' id='skyCoverData'></ul>
     <ul class='hourlyData' id='windSpeedData'></ul>
 
-    
+    <input type='number' id='hours' value='24'>
+
 
 </body>
 
