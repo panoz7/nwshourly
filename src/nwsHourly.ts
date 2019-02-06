@@ -27,11 +27,36 @@ export async function getNwsHourly(zipCode: number): Promise<NwsHourly> {
 
 }
 
-class NwsHourly {
+export class NwsHourly {
     private rawData;
+    private zipCode: number;
+    private gridX: number;
+    private gridY: number;
+    private cwa: string;
 
-    constructor(rawData) {
-        this.rawData = rawData;
+    constructor(zipCode: number) {
+        this.zipCode = zipCode;
+    }
+
+    async getData(): Promise<void> {
+        if (!this.gridX) {
+            await this.getNwsParam();
+        }
+
+        const data = await makeHttpRequest(`https://api.weather.gov/gridpoints/${this.cwa}/${this.gridX},${this.gridY}`, 'GET');
+        this.rawData = JSON.parse(data);
+    }
+
+    async getNwsParam(): Promise<void> {
+        // Get the zip code data
+        const zipData = JSON.parse(await makeHttpRequest(`./zipcode/${this.zipCode}`, 'GET'));
+
+        // Fetch the point data from the NWS using the lat and long from the zip data
+        const pointData = JSON.parse(await makeHttpRequest(`https://api.weather.gov/points/${zipData.lat},${zipData.long}`, 'GET'));
+
+        this.gridX = pointData.properties.gridX;
+        this.gridY = pointData.properties.gridY;
+        this.cwa = pointData.properties.cwa;
     }
 
     get hourlyTemp() {
