@@ -3,6 +3,7 @@ import { roundDate } from './helper.js';
 import { NwsDisplay, TempDisplay, PercentDisplay, NumericDisplay } from './nwsDisplay.js';
 
 let displays = []
+let nwsHourly: NwsHourly;
 let startTime: Date = roundDate(new Date, 'h');
 let endTime: Date = new Date(startTime.getTime() + (23 * 60 * 60 * 1000));
 
@@ -26,9 +27,22 @@ document.getElementById('zipCode').addEventListener('change', (e) => {
     
 })
 
+document.getElementById('refreshDisplay').addEventListener('click', refreshDisplays);
+
+
+async function refreshDisplays(): Promise<void> {
+    await nwsHourly.getData();
+    console.log(nwsHourly);
+
+    let startTime: Date = roundDate(new Date, 'h');
+    let endTime: Date = new Date(startTime.getTime() + (23 * 60 * 60 * 1000));
+
+    displays.forEach(display => display.renderDisplay(startTime, endTime))
+}
+
+
 async function setupDisplays(zipCode: number): Promise<void> {
-    // const data = await getNwsHourly(zipCode);
-    let nwsHourly = new NwsHourly(zipCode);
+    nwsHourly = new NwsHourly(zipCode);
     await nwsHourly.getData();
 
     displays = [];

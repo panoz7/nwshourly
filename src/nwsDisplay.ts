@@ -17,9 +17,14 @@ export class NwsDisplay {
     }
 
     renderDisplay(startTime: Date, endTime: Date): void {
+        // Get the latest hourly data
         this.nwsData = this.nwsHourly[this.nwsProp];
-        this.clearDisplay();
+
+        // Get the display data
         let displayData = this.getDisplayData(startTime, endTime);
+        
+        // Clear the display and rebuild it
+        this.clearDisplay();
         this.buildDisplay(displayData)        
     }
 
@@ -32,6 +37,7 @@ export class NwsDisplay {
         })
     }
 
+    // This will be extended by each of the display objects
     getDisplayData(startTime: Date, endTime: Date): DisplayData[] {
         return [{date: new Date(), value: undefined, rgba: "undefined"}];
     }
@@ -40,6 +46,7 @@ export class NwsDisplay {
         this.node.innerHTML = "";
     }
 }
+
 
 export class TempDisplay extends NwsDisplay {
 
@@ -72,6 +79,7 @@ export class TempDisplay extends NwsDisplay {
     }
 
 }
+
 
 export class PercentDisplay extends NwsDisplay {
 
@@ -108,7 +116,7 @@ export class NumericDisplay extends NwsDisplay {
         this.color = color;
         this.max = max;
     }
-    
+
     getDisplayData(startTime: Date, endTime: Date): DisplayData[]  {
         const baseData = this.nwsData.getInterval(startTime, endTime);
 
