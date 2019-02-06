@@ -1,15 +1,26 @@
-import { NwsProperty } from './nwsHourly.js';
+import { NwsProperty, NwsHourly } from './nwsHourly.js';
 import { roundNum } from './helper.js';
 import { NwsEntry, DisplayData } from './interfaces.js';
 
 export class NwsDisplay {
 
+    nwsHourly: NwsHourly;
+    nwsProp: string;
     nwsData: NwsProperty; 
     node: HTMLElement;
 
-    constructor(node: HTMLElement, nwsData: NwsProperty) {
-        this.nwsData = nwsData;
+    constructor(node: HTMLElement, nwsHourly: NwsHourly, nwsProp: string) {
+        this.nwsHourly = nwsHourly;
+        this.nwsProp = nwsProp;
+        this.nwsData = nwsHourly[nwsProp];
         this.node = node;
+    }
+
+    renderDisplay(startTime: Date, endTime: Date): void {
+        this.nwsData = this.nwsHourly[this.nwsProp];
+        this.clearDisplay();
+        let displayData = this.getDisplayData(startTime, endTime);
+        this.buildDisplay(displayData)        
     }
 
     buildDisplay(data: DisplayData[]) {
@@ -19,6 +30,10 @@ export class NwsDisplay {
             li.innerHTML = `<span>${entry.value}</span>`;
             this.node.appendChild(li);
         })
+    }
+
+    getDisplayData(startTime: Date, endTime: Date): DisplayData[] {
+        return [{date: new Date(), value: undefined, rgba: "undefined"}];
     }
 
     clearDisplay(): void {
@@ -31,19 +46,13 @@ export class TempDisplay extends NwsDisplay {
     baseTemp: number;
     baseRange: number;
 
-    constructor(node: HTMLElement, nwsData: NwsProperty, baseTemp: number, baseRange: number) {
-        super(node, nwsData);
+    constructor(node: HTMLElement, nwsHourly: NwsHourly, nwsProp: string, baseTemp: number, baseRange: number) {
+        super(node, nwsHourly, nwsProp);
         this.baseTemp = baseTemp;
         this.baseRange = baseRange;
     }
 
-    renderDisplay(startTime: Date, endTime: Date): void {
-        this.clearDisplay();
-        let displayData = this.getDisplayData(startTime, endTime);
-        this.buildDisplay(displayData)        
-    }
-
-    private getDisplayData(startTime: Date, endTime: Date): DisplayData[] {
+    getDisplayData(startTime: Date, endTime: Date): DisplayData[] {
         return this.nwsData.getInterval(startTime, endTime)
         .map((entry: NwsEntry) : DisplayData => {
             let temp = roundNum(entry.value * 9 / 5 + 32, 2);
@@ -68,18 +77,12 @@ export class PercentDisplay extends NwsDisplay {
 
     color: [number,number,number];
 
-    constructor(node: HTMLElement, nwsData: NwsProperty, color: [number,number,number]) {
-        super(node, nwsData);
+    constructor(node: HTMLElement, nwsHourly: NwsHourly, nwsProp: string, color: [number,number,number]) {
+        super(node, nwsHourly, nwsProp);
         this.color = color;
     }
 
-    renderDisplay(startTime: Date, endTime: Date): void {
-        this.clearDisplay();
-        let displayData = this.getDisplayData(startTime, endTime);
-        this.buildDisplay(displayData)        
-    }
-
-    private getDisplayData(startTime: Date, endTime: Date): DisplayData[]  {
+    getDisplayData(startTime: Date, endTime: Date): DisplayData[]  {
         const baseData = this.nwsData.getInterval(startTime, endTime);
 
         return baseData.map((entry): DisplayData => {
@@ -100,19 +103,13 @@ export class NumericDisplay extends NwsDisplay {
     color: [number,number,number];
     max: number;
 
-    constructor(node: HTMLElement, nwsData: NwsProperty, color: [number,number,number], max: number) {
-        super(node, nwsData);
+    constructor(node: HTMLElement, nwsHourly: NwsHourly, nwsProp: string, color: [number,number,number], max: number) {
+        super(node, nwsHourly, nwsProp);
         this.color = color;
         this.max = max;
     }
-
-    renderDisplay(startTime: Date, endTime: Date): void {
-        this.clearDisplay();
-        let displayData = this.getDisplayData(startTime, endTime);
-        this.buildDisplay(displayData)        
-    }
-
-    private getDisplayData(startTime: Date, endTime: Date): DisplayData[]  {
+    
+    getDisplayData(startTime: Date, endTime: Date): DisplayData[]  {
         const baseData = this.nwsData.getInterval(startTime, endTime);
 
         return baseData.map((entry): DisplayData => {

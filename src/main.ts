@@ -1,4 +1,4 @@
-import { getNwsHourly, NwsProperty } from './nwsHourly.js';
+import { getNwsHourly, NwsProperty, NwsHourly } from './nwsHourly.js';
 import { roundDate } from './helper.js';
 import { NwsDisplay, TempDisplay, PercentDisplay, NumericDisplay } from './nwsDisplay.js';
 
@@ -27,17 +27,15 @@ document.getElementById('zipCode').addEventListener('change', (e) => {
 })
 
 async function setupDisplays(zipCode: number): Promise<void> {
-    const data = await getNwsHourly(zipCode);
+    // const data = await getNwsHourly(zipCode);
+    let nwsHourly = new NwsHourly(zipCode);
+    await nwsHourly.getData();
 
     displays = [];
-    displays.push(new TempDisplay(document.getElementById('tempData'), data.hourlyTemp, 45, 35));
-    displays.push(new PercentDisplay(document.getElementById('skyCoverData'), data.skyCover, [190,190,190]));
-    displays.push(new PercentDisplay(document.getElementById('precipProbabilityData'), data.precipProbability, [0,0,255]));
-    displays.push(new NumericDisplay(document.getElementById('windSpeedData'), data.windSpeed, [190,190,190], 20));
-
-    // startTime = roundDate(new Date, 'h');
-    // endTime = new Date(startTime.getTime() + (23 * 60 * 60 * 1000))
+    displays.push(new TempDisplay(document.getElementById('tempData'), nwsHourly, 'hourlyTemp', 45, 35));
+    displays.push(new PercentDisplay(document.getElementById('skyCoverData'), nwsHourly, 'skyCover', [190,190,190]));
+    displays.push(new PercentDisplay(document.getElementById('precipProbabilityData'), nwsHourly, 'precipProbability', [0,0,255]));
+    displays.push(new NumericDisplay(document.getElementById('windSpeedData'), nwsHourly, 'windSpeed', [190,190,190], 20));
 
     displays.forEach(display => display.renderDisplay(startTime, endTime))
-
 }
