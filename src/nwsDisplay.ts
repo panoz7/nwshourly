@@ -47,6 +47,35 @@ export class NwsDisplay {
     }
 }
 
+export class HourDisplay { 
+
+    node: HTMLElement;
+
+    constructor(node: HTMLElement) {
+        this.node = node;
+    }
+
+    renderDisplay(startTime: Date, endTime: Date) {
+        // Clear the display
+        this.clearDisplay();
+
+        let currentTime = startTime;
+        while (currentTime <= endTime) {
+            let li = document.createElement('li');
+            li.innerHTML = `<span>${currentTime.getHours()}</span>`;
+            this.node.appendChild(li);
+            currentTime = new Date(currentTime.getTime() + (60 * 60 * 1000));
+        }
+
+    }
+
+
+    clearDisplay(): void {
+        this.node.innerHTML = "";
+    }
+
+}
+
 
 export class TempDisplay extends NwsDisplay {
 
