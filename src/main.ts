@@ -56,4 +56,26 @@ async function setupDisplays(zipCode: number): Promise<void> {
     displays.push(new NumericDisplay(document.getElementById('windSpeedData'), nwsHourly, 'windSpeed', [190,190,190], 20));
 
     displays.forEach(display => display.renderDisplay(startTime, endTime))
+
+    autoRefreshDisplays(roundDate(new Date, 'h', false),  60 * 60 * 1000)
+}
+
+function autoRefreshDisplays(initialTime: Date, increment: number) {
+    // Get the number of milliseconds until the first refresh
+    const now = new Date;
+    const timeUntilFirst = initialTime.getTime() - now.getTime();
+
+    console.log("Auto Refresh Initiated", `Next Refresh at ${initialTime}`)
+
+    setTimeout(() => {
+        refreshDisplays();
+        console.log("Displays Refreshed", `Next Refresh at ${new Date(initialTime.getTime() + increment)}`)
+        setInterval(() => {
+            const now = new Date;
+            console.log("Displays Refreshed", `Next Refresh at ${new Date(now.getTime() + increment)}`)
+            refreshDisplays();
+        }, increment);
+    }, timeUntilFirst)
+
+
 }

@@ -1,4 +1,6 @@
 export function makeHttpRequest(url:string,method:string,body?:string,contentType:string = 'application/x-www-form-urlencoded'): Promise<string> {
+    console.log(url);
+
 
     return new Promise((resolve, reject) => {
 
@@ -8,8 +10,9 @@ export function makeHttpRequest(url:string,method:string,body?:string,contentTyp
         req.setRequestHeader('Content-type', contentType);
 
         req.onload = function() {
-            if (req.status == 200)
+            if (req.status == 200) {
                 resolve(req.response)
+            }
             else
                 reject(Error(req.statusText));
         }
