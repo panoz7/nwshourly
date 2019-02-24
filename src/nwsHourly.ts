@@ -1,5 +1,5 @@
-import { makeHttpRequest, roundNum } from './helper.js';
-import { NwsEntry, DisplayData } from './interfaces.js';
+import { makeHttpRequest, roundNum } from './helper';
+import { NwsEntry, DisplayData } from './interfaces';
 
 export async function getNwsHourly(zipCode: number): Promise<NwsHourly> {
     

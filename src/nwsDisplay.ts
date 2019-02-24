@@ -1,6 +1,6 @@
-import { NwsProperty, NwsHourly } from './nwsHourly.js';
-import { roundNum } from './helper.js';
-import { NwsEntry, DisplayData } from './interfaces.js';
+import { NwsProperty, NwsHourly } from './nwsHourly';
+import { roundNum } from './helper';
+import { NwsEntry, DisplayData } from './interfaces';
 
 export class NwsDisplay {
 

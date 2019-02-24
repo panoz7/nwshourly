@@ -1,6 +1,6 @@
-import { getNwsHourly, NwsProperty, NwsHourly } from './nwsHourly.js';
-import { roundDate } from './helper.js';
-import { NwsDisplay, TempDisplay, PercentDisplay, NumericDisplay, HourDisplay } from './nwsDisplay.js';
+import { getNwsHourly, NwsProperty, NwsHourly } from './nwsHourly';
+import { roundDate } from './helper';
+import { NwsDisplay, TempDisplay, PercentDisplay, NumericDisplay, HourDisplay } from './nwsDisplay';
 
 let displays = [];
 let hoursInput = document.getElementById('hours') as HTMLInputElement;
