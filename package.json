@@ -17,10 +17,14 @@
   },
   "homepage": "https://github.com/panoz7/nwshourly#readme",
   "devDependencies": {
+    "@types/suncalc": "^1.8.0",
     "awesome-typescript-loader": "^5.2.1",
     "source-map-loader": "^0.2.4",
     "typescript": "^3.3.3333",
     "webpack": "^4.29.5",
     "webpack-cli": "^3.2.3"
+  },
+  "dependencies": {
+    "suncalc": "^1.8.0"
   }
 }

@@ -1,6 +1,6 @@
 import { getNwsHourly, NwsProperty, NwsHourly } from './nwsHourly';
 import { roundDate } from './helper';
-import { NwsDisplay, TempDisplay, PercentDisplay, NumericDisplay, HourDisplay } from './nwsDisplay';
+import { NwsDisplay, TempDisplay, PercentDisplay, NumericDisplay, HourDisplay, SunDisplay } from './nwsDisplay';
 
 let displays = [];
 let hoursInput = document.getElementById('hours') as HTMLInputElement;
@@ -50,6 +50,7 @@ async function setupDisplays(zipCode: number): Promise<void> {
 
     displays = [];
     displays.push(new HourDisplay(document.getElementById('hoursData')));
+    displays.push(new SunDisplay(document.getElementById('sunData'), nwsHourly));
     displays.push(new TempDisplay(document.getElementById('tempData'), nwsHourly, 'hourlyTemp', 45, 35));
     displays.push(new PercentDisplay(document.getElementById('skyCoverData'), nwsHourly, 'skyCover', [190,190,190]));
     displays.push(new PercentDisplay(document.getElementById('precipProbabilityData'), nwsHourly, 'precipProbability', [0,0,255]));

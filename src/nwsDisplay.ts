@@ -1,6 +1,7 @@
 import { NwsProperty, NwsHourly } from './nwsHourly';
-import { roundNum } from './helper';
+import { roundNum, roundDate } from './helper';
 import { NwsEntry, DisplayData } from './interfaces';
+import { getTimes as getSunData } from 'suncalc'
 
 export class NwsDisplay {
 
@@ -45,6 +46,79 @@ export class NwsDisplay {
     clearDisplay(): void {
         this.node.innerHTML = "";
     }
+}
+
+export class SunDisplay {
+
+    node: HTMLElement;
+    nwsHourly: NwsHourly;
+    lat: number;
+    long: number;
+
+    constructor(node: HTMLElement, nwsHourly: NwsHourly) {
+        this.node = node;
+        this.nwsHourly = nwsHourly; 
+        this.lat = nwsHourly.zipData.lat;
+        this.long = nwsHourly.zipData.long;
+    }
+
+    renderDisplay(startTime: Date, endTime: Date) {
+        let displayData = this.getDisplayData(startTime, endTime);
+        console.log(startTime, endTime);
+        this.clearDisplay();
+        this.buildDisplay(displayData);
+    }
+
+    buildDisplay(data: DisplayData[]) {
+        data.forEach(entry => {
+            let li = document.createElement('li');
+            li.style.left = `${entry.value}%`;
+            this.node.appendChild(li);
+        })
+    }
+
+    getDisplayData(startTime: Date, endTime: Date): DisplayData[] {
+
+        let times: Date[] = []
+        let checkTime = new Date(startTime.getTime()); 
+        
+        // Grab the sunrise and sunset times day by day until the sunset time is after end time. Then we can stop. 
+        for (;;) {
+            // Get the sunrise and sunset times for the current day we're checking
+            var {sunrise, sunset} = getSunData(checkTime, this.lat, this.long);
+    
+            // If the sunrise is within the start time and end time add it
+            if (sunrise >= startTime && sunrise <= endTime) {
+                times.push(sunrise);
+            }
+            
+            // If the sunset is less than the end time add it
+            if (sunset <= endTime) {
+                times.push(sunset);
+            }
+            // Otherwise break out of the loop. We don't need to check anymore.
+            else {
+                break;
+            }
+
+            // If we made it to here increment the day we're checking so that the next time through the loop we'll check the next day.
+            checkTime = new Date(checkTime.getTime() + 24 * 60 * 60 * 1000)
+        }
+
+        const intervalDuration = endTime.getTime() + (60 * 60 * 1000) - startTime.getTime();
+
+        return times.map((time): DisplayData => {
+            const duration = time.getTime() - startTime.getTime();
+            const percent = duration / intervalDuration * 100;
+            return {date: time, value: percent}
+        })
+
+    }
+
+    clearDisplay(): void {
+        this.node.innerHTML = "";
+    }
+
 }
 
 export class HourDisplay { 
