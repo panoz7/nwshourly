@@ -7,5 +7,5 @@ export interface NwsEntry {
 export interface DisplayData {
     date: Date;
     value: any;
-    rgba: string;
+    rgba?: string;
 }

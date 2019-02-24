@@ -7,6 +7,10 @@
             margin: 0;
         }
 
+        #nwsDisplay {
+            position: relative;
+        }
+
         ul.hourlyData {
             /* background-color: black; */
             list-style: none;
@@ -36,6 +40,30 @@
         ul#hoursData li {
             height: 50px;
         }
+
+        #nwsDisplay {
+        }
+
+        ul#sunData {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        ul#sundata li {
+            padding: 0;
+            margin: 0;
+            width: 1px;
+            height: 100%;
+            background-color: rgba(255,255,255,.30);
+            position: absolute;
+        }
+
         
 
     </style>
@@ -44,11 +72,23 @@
 
 <body>
 
+    <div id='nwsDisplay'>
+
+
+
     <ul class='hourlyData' id='hoursData'></ul>
     <ul class='hourlyData' id='tempData'></ul>
     <ul class='hourlyData' id='precipProbabilityData'></ul>
     <ul class='hourlyData' id='skyCoverData'></ul>
     <ul class='hourlyData' id='windSpeedData'></ul>
+
+    <!-- <ul id='sunData'>Testing</div> -->
+
+
+    <ul class='sunData' id='sunData'>
+    </ul>
+
+    </div>
 
     <input type='number' id='hours' value='24'>
     <input type='number' id='zipCode' value='20009'>

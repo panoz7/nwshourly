@@ -1,5 +1,5 @@
-import { makeHttpRequest, roundNum } from './helper.js';
-import { NwsEntry, DisplayData } from './interfaces.js';
+import { makeHttpRequest, roundNum } from './helper';
+import { NwsEntry, DisplayData } from './interfaces';
 
 export async function getNwsHourly(zipCode: number): Promise<NwsHourly> {
     
@@ -33,6 +33,7 @@ export class NwsHourly {
     private gridX: number;
     private gridY: number;
     private cwa: string;
+    zipData: any;
 
     constructor(zipCode: number) {
         this.zipCode = zipCode;
@@ -50,6 +51,7 @@ export class NwsHourly {
     async getNwsParam(): Promise<void> {
         // Get the zip code data
         const zipData = JSON.parse(await makeHttpRequest(`./zipcode/${this.zipCode}`, 'GET'));
+        this.zipData = zipData;
 
         // Fetch the point data from the NWS using the lat and long from the zip data
         const pointData = JSON.parse(await makeHttpRequest(`https://api.weather.gov/points/${zipData.lat},${zipData.long}`, 'GET'));
